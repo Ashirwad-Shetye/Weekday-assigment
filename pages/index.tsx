@@ -4,7 +4,7 @@ import styles from "@/styles/Home.module.css";
 import FilterSection from "@/components/filter_section/filterSection";
 import { useEffect, useState } from "react";
 import { Filters, Job } from "@/types";
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import JobListings from "@/components/job_listings/jobListings";
 import { Icons } from "@/components/ui_components/Icons";
 import { useAppSelector } from "@/hooks/redux_hooks";
@@ -103,10 +103,6 @@ export default function Home() {
   const searchFilteredJobs = JobsList.filter((job) =>
 		job.companyName.toLowerCase().includes(searchInput.toLowerCase())
   )
-  
-  console.log(searchFilteredJobs)
-
-  console.log(searchInput)
 
   return (
 		<>

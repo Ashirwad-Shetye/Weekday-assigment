@@ -14,7 +14,6 @@ const FilterSection = ( { value, setValue}:FilterSectionProps ) => {
   const dispatch = useAppDispatch()
 
   const filters = useAppSelector( ( state ) => state.filters );
-  console.log("Redux Store State:", filters);
 
 	const handleJobRoleChange = (value: string[]) => {
 		dispatch(setJobRole(value));
@@ -32,7 +31,6 @@ const FilterSection = ( { value, setValue}:FilterSectionProps ) => {
 		dispatch(setMinBasePay(value));
   };
   
-  const handleInputChange = () => {}
 
   return (
 		<div className='text-blue-500 w-full mb-10 gap-2 flex items-end flex-wrap'>

@@ -5,7 +5,6 @@ import { capitalizeFirstLetter } from '@/utils/capitalizeFirstLetter'
 import { Icons } from '../ui_components/Icons'
 
 const Card = ( { data }: CardProps ) => {
-    console.log(data)
   return (
 		<div className='w-full h-full border p-4 flex flex-col space-y-2 overflow-clip rounded-2xl hover:scale-105 duration-300'>
 			<div className='border rounded-xl flex space-x-1 w-fit px-2 py-0.5 items-center justify-center'>

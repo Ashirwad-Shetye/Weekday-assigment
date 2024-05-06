@@ -1,6 +1,7 @@
 # WeekDay. Assignment
 
 ## Snippet
+![image](https://github.com/Ashirwad-Shetye/Weekday-assigment/assets/99337222/c84175c7-919b-426e-9982-68b050d77c5b)
 
 ## Live link
 

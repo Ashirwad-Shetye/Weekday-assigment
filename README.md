@@ -5,7 +5,7 @@
 
 ## Live link
 
-link:
+link: https://weekday-assigment-ioz42kxra-ashirwadshetyes-projects.vercel.app/
 
 ## Tech stack
 

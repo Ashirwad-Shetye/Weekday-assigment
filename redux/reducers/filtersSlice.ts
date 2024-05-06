@@ -4,11 +4,11 @@ import { createSlice } from '@reduxjs/toolkit';
 export const filtersSlice = createSlice({
   name: 'filters',
   initialState: {
-    jobRole: [''],
-    exp: '',
-    location: '',
-    remote: '',
-    minBasePay: '',
+    jobRole: [],
+    exp: [],
+    location: [],
+    remote: [],
+    minBasePay: [],
   },
   reducers: {
     setJobRole: (state, action) => {

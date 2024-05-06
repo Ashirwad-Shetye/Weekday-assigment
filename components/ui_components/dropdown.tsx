@@ -4,13 +4,15 @@ import { Icons } from "./Icons";
 interface DropdownProps {
 	options: string[];
 	placeholder: string;
-	onChange: any
+    onChange: any,
+    width?: string
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
 	options,
     placeholder = "Select",
-    onChange
+    onChange,
+    width
 }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -98,7 +100,11 @@ const Dropdown: React.FC<DropdownProps> = ({
 				<input
 					ref={inputRef}
 					type='text'
-					className='min-w-20 text-gray-700 font-light px-1 focus:outline-none outline-none text-[0.8rem] w-fit max-w-32'
+                    className='min-w-20 text-gray-700 font-light px-1 focus:outline-none outline-none text-[0.8rem] w-fit max-w-32'
+                    style={{
+                        width: width,
+                        maxWidth: width
+                    }}
 					placeholder={selectedOptions.length === 0 ? placeholder : ""}
 					value={inputValue}
 					onChange={handleInputChange}

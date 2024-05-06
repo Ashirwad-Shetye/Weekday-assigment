@@ -13,3 +13,11 @@ export interface Job {
     companyName: string;
     logoUrl: string;
 }
+
+export interface Filters {
+    jobRole: string[],
+    exp: string[],
+    location: string[],
+    remote: string[],
+    minBasePay: string[],
+}

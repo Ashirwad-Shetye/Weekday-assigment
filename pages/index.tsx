@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import FilterSection from "@/components/filter_section/filterSection";
 import { useEffect, useState } from "react";
-import { Job } from "@/types";
+import { Filters, Job } from "@/types";
 import axios, { AxiosRequestConfig } from "axios";
 import JobListings from "@/components/job_listings/jobListings";
 import { Icons } from "@/components/ui_components/Icons";
@@ -14,12 +14,11 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
 
   const [ jobs, setJobs ] = useState<Job[]>( [] )
-  console.log(jobs)
   const [ totalCount, setTotalCount ] = useState<number>( 0 )
   const [ offset, setOffset ] = useState<number>( 0 );
+  const [ filteredJobs, setFilteredJobs ] = useState<Job[]>([])
   
   const filters = useAppSelector((state) => state.filters);
-	console.log(filters);
 
   const fetchData = async (newOffset: number) => {
 		try {
@@ -42,11 +41,74 @@ export default function Home() {
   useEffect( () => {
     fetchData(0)
   }, [] )
+
+  
+
+  useEffect( () => {
+    const filterJobs = (filters: Filters) => {
+      return jobs.filter( ( job ) => {
+        const jobRoleFilter =
+					filters.jobRole.length === 0 ||
+					filters.jobRole.some(
+						(role) => role.toLowerCase() === job.jobRole.toLowerCase()
+					);
+
+				// Check exp filter
+				const expFilter =
+					filters.exp.length === 0 ||
+					filters.exp.some(
+						(exp) => job.minExp <= parseInt(exp) && job.maxExp >= parseInt(exp)
+					);
+
+				// Check location filter
+				const locationFilter =
+					filters.location.length === 0 ||
+					filters.location.includes(job.location);
+
+				// Check remote filter
+				const remoteFilter =
+					filters.remote.length === 0 || filters.remote.includes(job.location);
+
+				// Check minBasePay filter
+				const minBasePayFilter =
+					filters.minBasePay.length === 0 ||
+					filters.minBasePay.some(
+						(minPay) =>
+							job.minJdSalary !== null &&
+							job.minJdSalary >= parseInt(minPay.replace("L", ""))
+					);
+
+				// Return true if all filters pass
+				return (
+					jobRoleFilter &&
+					expFilter &&
+					locationFilter &&
+					remoteFilter &&
+					minBasePayFilter
+				);
+			});
+		};
+
+		const filteredJobs = filterJobs(filters);
+    
+    setFilteredJobs(filteredJobs)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
   
   const loadMoreJobs = () => {
 		const newOffset = offset + 10;
 		fetchData(newOffset);
-	};
+  };
+  
+  const areFiltersEmpty = Object.values(filters).every(
+		(filter) => filter.length === 0
+	);
+  const JobsList = areFiltersEmpty ? jobs : filteredJobs;
+
+  console.log( filteredJobs );
+  console.log(JobsList)
+  
+  console.log(areFiltersEmpty)
 
   return (
 		<>
@@ -67,18 +129,20 @@ export default function Home() {
 			</Head>
 			<main className={`${styles.main} ${inter.className} w-[90%] mx-auto`}>
 				<FilterSection />
-				{jobs.length > 0 ? (
+				{JobsList.length > 0 ? (
 					<>
-						<JobListings data={jobs} />
-						<div className='w-full flex items-center justify-center py-6'>
-              <button
-                onClick={loadMoreJobs}
-                className="flex items-center justify-center space-x-1 font-semibold hover:scale-105 active:scale-95 duration-200"
-              >
-                <Icons.loader className="text-lg"/>
-								<h1>Load More</h1>
-							</button>
-						</div>
+            <JobListings data={JobsList} />
+            {offset <= totalCount && (
+              <div className='w-full flex items-center justify-center py-6'>
+                <button
+                  onClick={loadMoreJobs}
+                  className="flex items-center justify-center space-x-1 font-semibold hover:scale-105 active:scale-95 duration-200"
+                >
+                  <Icons.loader className="text-lg"/>
+                  <h1>Load More</h1>
+                </button>
+              </div>
+            )}
 					</>
 				) : (
 					<></>

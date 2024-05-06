@@ -16,7 +16,8 @@ export default function Home() {
   const [ jobs, setJobs ] = useState<Job[]>( [] )
   const [ totalCount, setTotalCount ] = useState<number>( 0 )
   const [ offset, setOffset ] = useState<number>( 0 );
-  const [ filteredJobs, setFilteredJobs ] = useState<Job[]>([])
+  const [ filteredJobs, setFilteredJobs ] = useState<Job[]>( [] )
+  const [ searchInput, setSearchInput] = useState<string>('')
   
   const filters = useAppSelector((state) => state.filters);
 
@@ -40,9 +41,7 @@ export default function Home() {
   
   useEffect( () => {
     fetchData(0)
-  }, [] )
-
-  
+  }, [] )  
 
   useEffect( () => {
     const filterJobs = (filters: Filters) => {
@@ -53,23 +52,21 @@ export default function Home() {
 						(role) => role.toLowerCase() === job.jobRole.toLowerCase()
 					);
 
-				// Check exp filter
 				const expFilter =
 					filters.exp.length === 0 ||
 					filters.exp.some(
 						(exp) => job.minExp <= parseInt(exp) && job.maxExp >= parseInt(exp)
 					);
 
-				// Check location filter
-				const locationFilter =
-					filters.location.length === 0 ||
-					filters.location.includes(job.location);
-
-				// Check remote filter
 				const remoteFilter =
-					filters.remote.length === 0 || filters.remote.includes(job.location);
+					(filters.remote.length === 0 && !filters.remote.includes("Hybrid")) ||
+					(filters.remote.includes("Remote") &&
+						job.location.toLowerCase() === "remote") ||
+					(filters.remote.includes("Hybrid") &&
+						job.location.toLowerCase() !== "remote");
+					(filters.remote.includes("In-office") &&
+						job.location.toLowerCase() !== "remote");
 
-				// Check minBasePay filter
 				const minBasePayFilter =
 					filters.minBasePay.length === 0 ||
 					filters.minBasePay.some(
@@ -78,11 +75,9 @@ export default function Home() {
 							job.minJdSalary >= parseInt(minPay.replace("L", ""))
 					);
 
-				// Return true if all filters pass
 				return (
 					jobRoleFilter &&
 					expFilter &&
-					locationFilter &&
 					remoteFilter &&
 					minBasePayFilter
 				);
@@ -105,10 +100,13 @@ export default function Home() {
 	);
   const JobsList = areFiltersEmpty ? jobs : filteredJobs;
 
-  console.log( filteredJobs );
-  console.log(JobsList)
+  const searchFilteredJobs = JobsList.filter((job) =>
+		job.companyName.toLowerCase().includes(searchInput.toLowerCase())
+  )
   
-  console.log(areFiltersEmpty)
+  console.log(searchFilteredJobs)
+
+  console.log(searchInput)
 
   return (
 		<>
@@ -128,24 +126,29 @@ export default function Home() {
 				/>
 			</Head>
 			<main className={`${styles.main} ${inter.className} w-[90%] mx-auto`}>
-				<FilterSection />
-				{JobsList.length > 0 ? (
+				<FilterSection
+					value={searchInput}
+					setValue={setSearchInput}
+				/>
+				{searchFilteredJobs.length > 0 ? (
 					<>
-            <JobListings data={JobsList} />
-            {offset <= totalCount && (
-              <div className='w-full flex items-center justify-center py-6'>
-                <button
-                  onClick={loadMoreJobs}
-                  className="flex items-center justify-center space-x-1 font-semibold hover:scale-105 active:scale-95 duration-200"
-                >
-                  <Icons.loader className="text-lg"/>
-                  <h1>Load More</h1>
-                </button>
-              </div>
-            )}
+						<JobListings data={searchFilteredJobs} />
+						{offset <= totalCount && (
+							<div className='w-full flex items-center justify-center py-6'>
+								<button
+									onClick={loadMoreJobs}
+									className='flex items-center justify-center space-x-1 font-semibold hover:scale-105 active:scale-95 duration-200'
+								>
+									<Icons.loader className='text-lg' />
+									<h1>Load More</h1>
+								</button>
+							</div>
+						)}
 					</>
 				) : (
-					<></>
+					<div className='p-5 w-full'>
+						<h1 className='text-gray-500 w-full text-center'>No jobs found</h1>
+					</div>
 				)}
 			</main>
 		</>

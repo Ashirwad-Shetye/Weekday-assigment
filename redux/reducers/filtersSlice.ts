@@ -4,23 +4,31 @@ import { createSlice } from '@reduxjs/toolkit';
 export const filtersSlice = createSlice({
   name: 'filters',
   initialState: {
-    jobRole: '',
-    minExp: 0,
-    maxExp: Infinity,
-    // Add more filter fields as needed
+    jobRole: [''],
+    exp: '',
+    location: '',
+    remote: '',
+    minBasePay: '',
   },
   reducers: {
     setJobRole: (state, action) => {
       state.jobRole = action.payload;
     },
     setExperience: (state, action) => {
-      state.minExp = action.payload.minExp;
-      state.maxExp = action.payload.maxExp;
+      state.exp = action.payload
     },
-    // Add more reducers for other filters
+    setlocation: (state, action) => {
+      state.location = action.payload;
+    },
+    setRemote: (state, action) => {
+      state.remote = action.payload
+    },
+    setMinBasePay: (state, action) => {
+      state.minBasePay = action.payload
+    },
   },
 });
 
-export const { setJobRole, setExperience } = filtersSlice.actions;
+export const { setJobRole, setExperience, setlocation, setRemote, setMinBasePay } = filtersSlice.actions;
 
 export default filtersSlice.reducer;

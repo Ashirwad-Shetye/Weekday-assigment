@@ -7,14 +7,19 @@ import { Job } from "@/types";
 import axios, { AxiosRequestConfig } from "axios";
 import JobListings from "@/components/job_listings/jobListings";
 import { Icons } from "@/components/ui_components/Icons";
+import { useAppSelector } from "@/hooks/redux_hooks";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 
   const [ jobs, setJobs ] = useState<Job[]>( [] )
+  console.log(jobs)
   const [ totalCount, setTotalCount ] = useState<number>( 0 )
-  const [offset, setOffset] = useState<number>(0);
+  const [ offset, setOffset ] = useState<number>( 0 );
+  
+  const filters = useAppSelector((state) => state.filters);
+	console.log(filters);
 
   const fetchData = async (newOffset: number) => {
 		try {

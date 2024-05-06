@@ -3,12 +3,14 @@ import { Icons } from "./Icons";
 
 interface DropdownProps {
 	options: string[];
-	placeholder?: string;
+	placeholder: string;
+	onChange: any
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
 	options,
-	placeholder = "Select",
+    placeholder = "Select",
+    onChange
 }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -34,8 +36,10 @@ const Dropdown: React.FC<DropdownProps> = ({
 			options.filter((option) =>
 				option.toLowerCase().includes(inputValue.toLowerCase())
 			)
-		);
-	}, [inputValue, options]);
+        );
+        onChange(selectedOptions)
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [inputValue, selectedOptions]);
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
@@ -94,7 +98,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 				<input
 					ref={inputRef}
 					type='text'
-					className='w-fit text-gray-700 font-light px-1 focus:outline-none outline-none'
+					className='min-w-20 text-gray-700 font-light px-1 focus:outline-none outline-none text-[0.8rem] w-fit max-w-32'
 					placeholder={selectedOptions.length === 0 ? placeholder : ""}
 					value={inputValue}
 					onChange={handleInputChange}
